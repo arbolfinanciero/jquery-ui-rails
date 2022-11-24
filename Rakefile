@@ -1,5 +1,6 @@
 Encoding.default_external = "UTF-8" if defined?(Encoding)
 require 'json'
+require 'set'
 require 'bundler/gem_tasks'
 
 # returns the source filename for a named file in the 'dependencies'
@@ -118,6 +119,7 @@ task :javascripts => :submodule do
   mkdir_p target_ui_dir + '/effects'
   mkdir_p target_ui_dir + '/widgets'
   mkdir_p target_ui_dir + '/i18n'
+  mkdir_p target_ui_dir + '/vendor/jquery-color'
 
   Dir.glob("jquery-ui/ui/**/*.js").each do |path|
     basename = File.basename(path)
@@ -167,6 +169,10 @@ task :javascripts => :submodule do
       out.write("//= require #{clean_path}\n")
     end
     Dir.glob("jquery-ui/ui/widgets/*.js").sort.each do |path|
+      clean_path = remove_js_extension(path).gsub('/ui', '')
+      out.write("//= require #{clean_path}\n")
+    end
+    Dir.glob("jquery-ui/ui/vendor/jquery-color/*.js").sort.each do |path|
       clean_path = remove_js_extension(path).gsub('/ui', '')
       out.write("//= require #{clean_path}\n")
     end
